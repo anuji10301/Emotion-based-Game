@@ -21,5 +21,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy your project files
 COPY . .
 
-# Set the default command to run your app
-CMD ["python", "app.py"]
+# Expose port 8000 for Flask app
+EXPOSE 8000
+
+# Run the Flask app
+CMD ["sh", "-c", "gunicorn -w 4 -b 0.0.0.0:${PORT:-8000} app:app"]
+
+
