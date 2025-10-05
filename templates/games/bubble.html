@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🫧 Bubble Pop Game</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #a1c4fd, #c2e9fb);
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #gameArea {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 0 10px rgba(255,255,255,0.6);
+      cursor: pointer;
+      animation: floatUp linear forwards;
+    }
+    @keyframes floatUp {
+      from { transform: translateY(100vh); opacity: 1; }
+      to { transform: translateY(-10vh); opacity: 0; }
+    }
+    #score {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 1.5rem;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+    .btn-exit {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    #remark {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 12px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameArea">
+    <div id="score">Score: 0</div>
+    <a href="/relaxing_games" class="btn btn-danger btn-exit">Exit</a>
+    <div id="remark">
+      🎉 Great Job! You popped 10 bubbles! <br><br>
+      <a href="/relaxing_games" class="btn btn-success">Exit</a>
+    </div>
+  </div>
+
+  <script>
+    let score = 0;
+    const scoreDisplay = document.getElementById("score");
+    const gameArea = document.getElementById("gameArea");
+    const remark = document.getElementById("remark");
+
+    let bubbleInterval = setInterval(createBubble, 1000);
+
+    function createBubble() {
+      if (score >= 10) return; // stop if game over
+
+      const bubble = document.createElement("div");
+      const size = Math.random() * 60 + 20; // 20px–80px
+      bubble.classList.add("bubble");
+      bubble.style.width = size + "px";
+      bubble.style.height = size + "px";
+      bubble.style.left = Math.random() * (window.innerWidth - size) + "px";
+      bubble.style.animationDuration = (Math.random() * 5 + 4) + "s"; // 4–9s
+      gameArea.appendChild(bubble);
+
+      bubble.addEventListener("click", () => {
+        score++;
+        scoreDisplay.textContent = "Score: " + score;
+        bubble.remove();
+        playPopSound();
+
+        if (score >= 10) {
+          endGame();
+        }
+      });
+
+      bubble.addEventListener("animationend", () => {
+        bubble.remove();
+      });
+    }
+
+    function playPopSound() {
+      const audio = new Audio("https://www.soundjay.com/buttons/sounds/button-16.mp3");
+      audio.play();
+    }
+
+    function endGame() {
+      clearInterval(bubbleInterval); // stop making new bubbles
+      scoreDisplay.style.display = "none"; // hide score
+      document.querySelectorAll(".bubble").forEach(b => b.remove()); // remove existing bubbles
+      remark.style.display = "block"; // show remark
+    }
+  </script>
+</body>
+</html>

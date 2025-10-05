@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🎨 Mandala Coloring Game</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #faf3e0;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      margin: 20px;
+      color: #444;
+    }
+    svg {
+      width: 80%;
+      max-width: 600px;
+      margin: 20px auto;
+      display: block;
+      cursor: pointer;
+    }
+    .color-palette {
+      margin: 20px;
+    }
+    .color-box {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      margin: 5px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #ccc;
+    }
+    .btn-exit {
+      margin: 20px;
+    }
+    #remark {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #2d6a4f;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 Mandala Coloring</h1>
+
+  <!-- Color Palette -->
+  <div class="color-palette">
+    <div class="color-box" style="background:#e63946;" onclick="setColor('#e63946')"></div>
+    <div class="color-box" style="background:#f1fa8c;" onclick="setColor('#f1fa8c')"></div>
+    <div class="color-box" style="background:#06d6a0;" onclick="setColor('#06d6a0')"></div>
+    <div class="color-box" style="background:#118ab2;" onclick="setColor('#118ab2')"></div>
+    <div class="color-box" style="background:#9b5de5;" onclick="setColor('#9b5de5')"></div>
+    <div class="color-box" style="background:#ff6b6b;" onclick="setColor('#ff6b6b')"></div>
+  </div>
+
+  <!-- Container for Mandala -->
+  <div id="mandalaContainer"></div>
+
+  <!-- Exit Button -->
+  <button class="btn btn-danger btn-exit" id="exitBtn" onclick="exitGame()">Exit</button>
+
+  <!-- Remark -->
+  <div id="remark"></div>
+
+  <a href="/relaxing_games" class="btn btn-success" id="exit" style="display: none">Exit</a>
+
+  <script>
+    let currentColor = "#e63946"; // default color
+    let mandalaIndex = 0;
+    let gameOver = false;
+
+    // List of mandala SVGs
+    const mandalas = [
+      `
+      <svg viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="80" fill="white" stroke="black" stroke-width="2" />
+        <circle cx="100" cy="100" r="60" fill="white" stroke="black" stroke-width="2" />
+        <circle cx="100" cy="100" r="40" fill="white" stroke="black" stroke-width="2" />
+        <circle cx="60" cy="60" r="15" fill="white" stroke="black" stroke-width="2"/>
+        <circle cx="140" cy="60" r="15" fill="white" stroke="black" stroke-width="2"/>
+        <circle cx="60" cy="140" r="15" fill="white" stroke="black" stroke-width="2"/>
+        <circle cx="140" cy="140" r="15" fill="white" stroke="black" stroke-width="2"/>
+      </svg>
+      `,
+      `
+      <svg viewBox="0 0 200 200">
+        <polygon points="100,20 180,100 100,180 20,100" fill="white" stroke="black" stroke-width="2"/>
+        <circle cx="100" cy="100" r="60" fill="white" stroke="black" stroke-width="2"/>
+        <rect x="70" y="70" width="60" height="60" fill="white" stroke="black" stroke-width="2"/>
+      </svg>
+      `,
+      `
+      <svg viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="80" fill="white" stroke="black" stroke-width="2"/>
+        <polygon points="100,20 120,100 100,180 80,100" fill="white" stroke="black" stroke-width="2"/>
+        <polygon points="20,100 100,120 180,100 100,80" fill="white" stroke="black" stroke-width="2"/>
+      </svg>
+      `
+    ];
+
+    // Show mandala
+    function loadMandala() {
+      if (gameOver) return;
+      if (mandalaIndex < mandalas.length) {
+        document.getElementById("mandalaContainer").innerHTML = mandalas[mandalaIndex];
+        enableColoring();
+      } else {
+        finishGame("🌟 Wow! You painted all mandalas beautifully. Relax, smile, and feel your creativity shine! 🌸");
+      }
+    }
+
+    function setColor(color) {
+      currentColor = color;
+    }
+
+    function enableColoring() {
+      const shapes = document.querySelectorAll("#mandalaContainer svg *");
+      shapes.forEach(shape => {
+        shape.addEventListener("click", function() {
+          this.setAttribute("fill", currentColor);
+          checkCompletion();
+        });
+      });
+    }
+
+    // Check if mandala is fully colored
+    function checkCompletion() {
+      const shapes = document.querySelectorAll("#mandalaContainer svg *");
+      let allColored = true;
+      shapes.forEach(shape => {
+        if (shape.getAttribute("fill") === "white") {
+          allColored = false;
+        }
+      });
+      if (allColored) {
+        mandalaIndex++;
+        setTimeout(loadMandala, 800); // small delay before next mandala
+      }
+    }
+
+    // Exit game anytime
+    function exitGame() {
+      finishGame("🙏 Thank you for playing! Take a deep breath, you did wonderful! 💖");
+      
+    }
+
+    // Finish game
+    function finishGame(message) {
+      gameOver = true;
+      document.getElementById("mandalaContainer").style.display = "none";
+      document.getElementById("exitBtn").style.display = "none";
+      document.getElementById("remark").innerHTML = message;
+      document.getElementById("remark").style.display = "block";
+      document.getElementById("exit").style.display = "block";
+    }
+
+    // Load first mandala
+    loadMandala();
+  </script>
+</body>
+</html>

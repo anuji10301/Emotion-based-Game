@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Relax Game</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f0f8ff; }
+    .circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 15px;
+      cursor: pointer;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      border: 2px solid transparent;
+    }
+    .circle.white { border: 2px solid #999; }
+    .circle.black { border: 2px solid #ccc; }
+    .circle:hover { transform: scale(1.1); }
+    .message {
+      font-size: 1.2rem;
+      margin-top: 15px;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .show { opacity: 1; }
+    .good { color: green; }
+    .bad { color: red; }
+    .color-meaning {
+      margin-top: 12px;
+      font-size: 1rem;
+      font-style: italic;
+      color: #333;
+    }
+  </style>
+</head>
+<body class="text-center">
+  <div class="container py-5">
+    <h1 class="mb-4">🎮 Relax Game</h1>
+    <p class="lead">Click only on the <b id="target-color">blue</b> circles to relax your mind.</p>
+    <div id="game-board"></div>
+    <h3 class="mt-4">Score: <span id="score">0</span></h3>
+    <p id="message" class="message"></p>
+    <p id="color-meaning" class="color-meaning"></p>
+    <a href="/" class="btn btn-secondary mt-4">⬅ Back to Home</a>
+  </div>
+
+  <script>
+    let score = 0;
+    const gameBoard = document.getElementById("game-board");
+    const scoreDisplay = document.getElementById("score");
+    const message = document.getElementById("message");
+    const targetColorDisplay = document.getElementById("target-color");
+    const colorMeaningEl = document.getElementById("color-meaning");
+
+    // Colors and meanings
+    const targetColors = [
+      "blue", "red", "yellow", "green", "purple", "orange", "pink",
+      "cyan", "teal", "lime", "magenta", "brown", "black", "white"
+    ];
+
+    const colorMeanings = {
+      blue: "Represents calm, trust, and serenity.",
+      red: "Represents energy, passion, and action.",
+      yellow: "Represents happiness, optimism, and creativity.",
+      green: "Represents growth, balance, and harmony.",
+      purple: "Represents imagination, wisdom, and luxury.",
+      orange: "Represents enthusiasm, warmth, and encouragement.",
+      pink: "Represents love, compassion, and playfulness.",
+      cyan: "Represents clarity, freshness, and communication.",
+      teal: "Represents stability, sophistication, and calm.",
+      lime: "Represents vitality, renewal, and freshness.",
+      magenta: "Represents creativity, inspiration, and innovation.",
+      brown: "Represents reliability, comfort, and simplicity.",
+      black: "Represents strength, elegance, and mystery.",
+      white: "Represents purity, peace, and clarity."
+    };
+
+    let currentTarget = "blue"; // default
+
+    function pickTargetColor() {
+      currentTarget = targetColors[Math.floor(Math.random() * targetColors.length)];
+      targetColorDisplay.textContent = currentTarget;
+      targetColorDisplay.style.color = currentTarget;
+
+      // Show meaning
+      colorMeaningEl.textContent = colorMeanings[currentTarget];
+    }
+
+    function randomColor() {
+      return targetColors[Math.floor(Math.random() * targetColors.length)];
+    }
+
+    function showMessage(text, isGood) {
+      message.textContent = text;
+      message.className = `message show ${isGood ? "good" : "bad"}`;
+      setTimeout(() => { message.classList.remove("show"); }, 1000);
+    }
+
+    function createCircles() {
+      gameBoard.innerHTML = "";
+      const total = 6;
+
+      let targetIndex = Math.floor(Math.random() * total);
+
+      for (let i = 0; i < total; i++) {
+        const circle = document.createElement("div");
+        circle.classList.add("circle");
+
+        let color = (i === targetIndex) ? currentTarget : randomColor();
+        circle.style.backgroundColor = color;
+
+        if (color === "white") circle.classList.add("white");
+        if (color === "black") circle.classList.add("black");
+
+        circle.onclick = () => {
+          if (color === currentTarget) {
+            score++;
+            showMessage("🌸 Great! Stay Calm 🌸", true);
+          } else {
+            score--;
+            showMessage("😌 Oops, focus again 😌", false);
+          }
+          scoreDisplay.innerText = score;
+
+          pickTargetColor();
+          createCircles();
+        };
+
+        gameBoard.appendChild(circle);
+      }
+    }
+
+    pickTargetColor();
+    createCircles();
+  </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🐟 Happy Fish Pond</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to bottom, #87ceeb, #e0f7fa);
+      text-align: center;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+    }
+    h1 {
+      margin: 20px;
+      color: #004d40;
+    }
+    #pond {
+      width: 700px;
+      height: 400px;
+      background: #a7ffeb;
+      margin: 20px auto;
+      border: 5px solid #004d40;
+      border-radius: 15px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0px 6px 12px rgba(0,0,0,0.3);
+    }
+    .fish {
+      width: 60px;
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .fish:hover {
+      transform: scale(1.2);
+    }
+    #scoreBoard {
+      font-size: 1.3rem;
+      margin: 15px;
+      font-weight: bold;
+      color: #00695c;
+    }
+    .btn-exit {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🐟 Happy Fish Pond</h1>
+  <p>Click on the fish to make them smile & earn points!</p>
+  
+  <div id="scoreBoard">Score: 0</div>
+  <div id="pond"></div>
+  
+  <a href="/relaxing_games" class="btn btn-danger btn-exit">Exit Pond</a>
+
+  <script>
+    const pond = document.getElementById("pond");
+    let score = 0;
+
+    // Load some fish
+    function createFish() {
+      const fish = document.createElement("img");
+      fish.src = "https://img.icons8.com/emoji/96/fish-emoji.png";
+      fish.classList.add("fish");
+
+      // Random position
+      fish.style.top = Math.random() * (pond.offsetHeight - 60) + "px";
+      fish.style.left = Math.random() * (pond.offsetWidth - 60) + "px";
+
+      // Move fish slowly
+      let moveX = (Math.random() - 0.5) * 2;
+      let moveY = (Math.random() - 0.5) * 2;
+      setInterval(() => {
+        let x = parseFloat(fish.style.left) + moveX;
+        let y = parseFloat(fish.style.top) + moveY;
+        if (x < 0 || x > pond.offsetWidth - 60) moveX *= -1;
+        if (y < 0 || y > pond.offsetHeight - 60) moveY *= -1;
+        fish.style.left = (x < 0 ? 0 : x) + "px";
+        fish.style.top = (y < 0 ? 0 : y) + "px";
+      }, 50);
+
+      // On click
+      fish.addEventListener("click", () => {
+        score++;
+        document.getElementById("scoreBoard").innerText = "Score: " + score;
+        fish.src = "https://img.icons8.com/emoji/96/smiling-face-with-sunglasses.png"; // happy fish
+        setTimeout(() => fish.src = "https://img.icons8.com/emoji/96/fish-emoji.png", 800);
+
+        // Remark when score is nice
+        if (score % 5 === 0) {
+          alert("✨ Amazing! You made the fish super happy! ✨");
+        }
+      });
+
+      pond.appendChild(fish);
+    }
+
+    // Add multiple fish
+    for (let i = 0; i < 6; i++) {
+      createFish();
+    }
+  </script>
+</body>
+</html>
